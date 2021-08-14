@@ -25,7 +25,9 @@ const io = socketIO(server, {
   origin: [`${process.env.FRONT_END_URL}:*`, 'https://localhost:*'],
 });
 
-io.adapter(sioRedis({ host: 'localhost', port: 6379, requestsTimeout: 5000 }));
+if (process.env.ENVIRONMENT !== 'testing') {
+  io.adapter(sioRedis({ host: 'localhost', port: 6379, requestsTimeout: 5000 }));
+}
 
 io.on('connection', (socket) => {
   socket.on('CLIENT_JOINED', async (data) => {
@@ -69,4 +71,10 @@ process.on('SIGTERM', () => {
   });
 });
 
-module.exports = server;
+if (process.env.ENVIRONMENT !== 'testing') {
+  server.listen(process.env.APP_PORT || 4000, () => {
+    console.info(chalk.blue(`Server & Socket listening on port ${process.env.APP_PORT}!`));
+  });
+}
+
+module.exports = io;

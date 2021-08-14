@@ -4,8 +4,8 @@
   "description": "Boilerplate for Any Node.js Project who wants to use any MongoDB with Mongoose-Express.js",
   "main": "server.js",
   "scripts": {
-    "start": "nodemon -e js,ejs --max-http-header-size 15000 --max-old-space-size=2048 clusteredAPP.js",
-    "restart": "lsof -i:8080 | grep -v 'PID' | awk '{print $2}' | xargs kill -9 && nodemon --max-http-header-size 15000 --max-old-space-size=2048 app.js",
+    "start": "node --max-http-header-size 15000 --max-old-space-size=2048 server.js",
+    "restart": "lsof -i:8080 | grep -v 'PID' | awk '{print $2}' | xargs kill -9 && node --max-http-header-size 15000 --max-old-space-size=2048 server.js",
     "test": "jest",
     "lint": "./node_modules/.bin/eslint --ignore-path .gitignore . --fix"
   },

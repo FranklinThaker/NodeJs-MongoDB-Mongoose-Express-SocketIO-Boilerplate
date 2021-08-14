@@ -1,0 +1,14 @@
+{
+    "apps": [
+        {
+            "name": "nodejs-express-mongodb-boilerplate",
+            "script": "./server.js",
+            "args": "--max-http-header-size 15000 --max-old-space-size=2048",
+            "watch": false,
+            "instances" : "max",
+            "exec_mode" : "cluster",
+            "error_file": "./logs/err.log",
+            "out_file": "./logs/out.log"
+        }
+    ]
+}

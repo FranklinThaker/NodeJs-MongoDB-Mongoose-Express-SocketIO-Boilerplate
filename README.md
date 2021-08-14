@@ -17,6 +17,16 @@ npm start
 npm run test
 ```
 
+How to manage in production mode? [Run, Delete, View Logs etc.]
+
+```sh
+npm i pm2 -g
+pm2 start production.config.json
+pm2 save
+pm2 logs [to check all logs]
+pm2 delete all [to delete all processes attached with pm2]
+```
+
 #
 # Thank you :)
 #
