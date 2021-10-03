@@ -47,7 +47,7 @@ jobs:
     - run: sudo ./MongoDB-Setup.sh
     - run: sudo apt-get install redis-server
     - run: sudo npm install --unsafe-perm
-    - run: sudo npm run test
+    # - run: sudo npm run test 
 
     # - name: Continous Code Delivery to Live Server
     #   uses: appleboy/ssh-action@master
