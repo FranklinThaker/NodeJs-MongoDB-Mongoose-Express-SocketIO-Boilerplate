@@ -1,5 +1,5 @@
 # NodeJs-MongoDB-Mongoose-Express-SocketIO-Boilerplate
-## _with CICD and Jest test framework_
+## _with CICD_
 
 [![Node.js CI](https://github.com/FranklinThaker/NodeJs-MongoDB-Mongoose-Express-SocketIO-Boilerplate/actions/workflows/NodeJS-CICD.yml/badge.svg?branch=main)](https://github.com/FranklinThaker/NodeJs-MongoDB-Mongoose-Express-SocketIO-Boilerplate/actions/workflows/NodeJS-CICD.yml)
 
@@ -14,7 +14,6 @@ cd NodeJs-MongoDB-Mongoose-Express-SocketIO-Boilerplate
 nano .env [add required variables -> I have added .env.local for example]
 npm i
 npm start
-npm run test
 ```
 
 How to manage in production mode? [Run, Delete, View Logs etc.]
