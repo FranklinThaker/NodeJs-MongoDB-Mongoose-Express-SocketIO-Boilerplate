@@ -3,38 +3,33 @@ require('dotenv').config();
 const express = require('express');
 const logger = require('morgan');
 const cors = require('cors');
-const rateLimit = require('express-rate-limit');
-const dbConn = require('./connection/db.connect');
-
-const userRoutes = require('./routes/user.routes');
-
-const { errorHandler } = require('./middleware/errorHandler');
-
-const { TOO_MANY_REQUESTS } = require('./helpers/messages');
-
-const apiLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 1000,
-  message: {
-    error: TOO_MANY_REQUESTS,
-  },
-});
+const glob = require('glob');
 
 const app = express();
-
 const { getROLES } = require('./middleware/middleware');
-
-getROLES();
-
-dbConn.connect();
 
 app.use(cors());
 app.options('*', cors());
+
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json({ limit: '50mb' }));
 app.use(logger('common'));
 
-app.use('/api/v1/account', apiLimiter, userRoutes);
-app.use(errorHandler);
+app.use('/', express.static('./uploads'));
+
+const initRoutes = (application) => {
+  glob('./routes/*.js', (err, routes) => {
+    if (err) {
+      console.error('Routing files issue ->', err);
+      return;
+    }
+    routes.forEach((routePath) => require(routePath).routes(application));
+    console.info('No of routes files : ', routes.length);
+  });
+};
+
+initRoutes(app);
+
+getROLES(); // to generate the ROLE object for role based authorization/authentication
 
 module.exports = app;

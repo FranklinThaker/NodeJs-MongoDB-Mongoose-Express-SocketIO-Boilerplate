@@ -2,13 +2,13 @@ const express = require('express');
 
 const router = express.Router();
 
-const userController = require('../controllers/user/user.controller');
-const userValidator = require('../controllers/user/user.validator');
+const userController = require('./user.controller');
+const userValidator = require('./user.validator');
 
 const {
   authentication,
   authorization,
-} = require('../middleware/middleware');
+} = require('../../middleware/middleware');
 
 router.post('/register', userValidator.registerValidator, userController.register);
 router.post('/login', userValidator.loginValidator, userController.login);

@@ -51,6 +51,7 @@
     "express": "^4.17.1",
     "express-rate-limit": "^5.2.6",
     "farmhash": "^3.2.1",
+    "glob": "^7.2.0",
     "husky": "^6.0.0",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.12.11",

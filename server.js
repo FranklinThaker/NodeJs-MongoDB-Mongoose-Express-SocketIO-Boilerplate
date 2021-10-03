@@ -25,7 +25,7 @@ const io = socketIO(server, {
   origin: [`${process.env.FRONT_END_URL}:*`, 'https://localhost:*'],
 });
 
-if (process.env.ENVIRONMENT !== 'testing') {
+if (process.env.ENVIRONMENT !== 'testing' && process.env.REDIS_SERVER === 'true') {
   io.adapter(sioRedis({ host: 'localhost', port: 6379, requestsTimeout: 5000 }));
 }
 

@@ -18,6 +18,10 @@ if (process.env.ENVIRONMENT === 'testing') {
   delete connectionObj.auth;
 }
 
+if (process.env.AUTHENTICATION === 'true') {
+  delete connectionObj.auth;
+}
+
 exports.connect = async () => {
   // Configuring the database
   mongoose.Promise = global.Promise;
