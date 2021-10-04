@@ -1,4 +1,3 @@
-// Load environment variables.
 require('dotenv').config();
 
 const mongoose = require('mongoose');
@@ -14,19 +13,15 @@ const connectionObj = {
   useCreateIndex: true,
 };
 
-if (process.env.ENVIRONMENT === 'testing') {
-  delete connectionObj.auth;
-}
+if (process.env.ENVIRONMENT === 'testing') delete connectionObj.auth;
 
-if (process.env.AUTHENTICATION === 'true') {
-  delete connectionObj.auth;
-}
+if (process.env.AUTHENTICATION === 'true') delete connectionObj.auth;
+
+const connectToDB = async () => mongoose.connect(`${process.env.DB_DIALECT}://${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_NAME}`, connectionObj);
 
 exports.connect = async () => {
-  // Configuring the database
   mongoose.Promise = global.Promise;
-  // mongoose.set('debug', true);
-  // Connecting to the database
+  // mongoose.set('debug', true); -> Uncomment if wants to debug the mongodb operations
   try {
     await mongoose.connect(`${process.env.DB_DIALECT}://${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_NAME}`, connectionObj);
     console.log('Successfully connected to the database');
@@ -42,21 +37,10 @@ exports.disconnect = async () => {
 };
 
 exports.removeDB = async () => {
-  const mongodbconnection = require('mongoose');
-  await mongodbconnection.connect(`${process.env.DB_DIALECT}://${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_NAME}`, {
-    auth: {
-      user: process.env.DB_USER,
-      password: process.env.DB_PASS,
-    },
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    useFindAndModify: false,
-    useCreateIndex: true,
-  });
-  const { connection } = mongodbconnection;
+  await connectToDB();
+  const { connection } = mongoose;
   connection.once('open', async () => {
-    console.log('*** MongoDB got connected ***');
     console.log(`Our Current Database Name : ${connection.db.databaseName}`);
-    mongodbconnection.connection.db.dropDatabase(console.log(`${connection.db.databaseName} database dropped.`));
+    mongoose.connection.db.dropDatabase(console.info(`${connection.db.databaseName} database dropped.`));
   });
 };

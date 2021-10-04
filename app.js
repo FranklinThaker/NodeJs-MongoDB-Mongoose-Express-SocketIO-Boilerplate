@@ -8,6 +8,10 @@ const glob = require('glob');
 const app = express();
 const { getROLES } = require('./middleware/middleware');
 
+const dbConn = require('./connection/db.connect');
+
+dbConn.connect();
+
 app.use(cors());
 app.options('*', cors());
 
