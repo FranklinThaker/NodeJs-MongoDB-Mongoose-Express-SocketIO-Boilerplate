@@ -1,10 +1,5 @@
-const {
-  errorResponse,
-} = require('../../helpers/helpers');
-
-const {
-  INVALID_PARAMS,
-} = require('../../helpers/messages');
+const { errorResponse } = require('../../helpers/helpers');
+const { errorResponses } = require('../../helpers/messages');
 
 exports.registerValidator = async (req, res, next) => {
   const param = { ...req.body, ...req.params, ...req.query };
@@ -22,7 +17,7 @@ exports.registerValidator = async (req, res, next) => {
     if (!param[element]) failed = true;
   });
 
-  if (failed) return errorResponse(req, res, INVALID_PARAMS, 400);
+  if (failed) return errorResponse(req, res, errorResponses.INVALID_PARAMS, 400);
   return next();
 };
 
@@ -42,6 +37,6 @@ exports.loginValidator = async (req, res, next) => {
     if (!param[element]) failed = true;
   });
 
-  if (failed) return errorResponse(req, res, INVALID_PARAMS, 400);
+  if (failed) return errorResponse(req, res, errorResponses.INVALID_PARAMS, 400);
   return next();
 };

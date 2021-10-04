@@ -9,7 +9,7 @@ env:
   DB_NAME : testing
   DB_HOST : localhost
   DB_DIALECT : mongodb
-  ENVIRONMENT : testing
+  NODE_ENV : testing
   APP_PORT : 4000
   SECRET : TOP_SECRET
   ENCRYPTION_KEY : ${{secrets.ENCRYPTION_KEY}}
@@ -38,7 +38,7 @@ jobs:
         echo "DB_NAME=${DB_NAME}" >> .env
         echo "DB_HOST=${DB_HOST}" >> .env
         echo "DB_DIALECT=${DB_DIALECT}" >> .env
-        echo "ENVIRONMENT=${ENVIRONMENT}" >> .env
+        echo "NODE_ENV=${NODE_ENV}" >> .env
         echo "APP_PORT=${APP_PORT}" >> .env
         echo "SECRET=${SECRET}" >> .env
         echo "ENCRYPTION_KEY=${ENCRYPTION_KEY}" >> .env

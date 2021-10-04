@@ -13,20 +13,18 @@ const connectionObj = {
   useCreateIndex: true,
 };
 
-if (process.env.ENVIRONMENT === 'testing') delete connectionObj.auth;
-
-if (process.env.AUTHENTICATION === 'true') delete connectionObj.auth;
+if (process.env.AUTHENTICATION === 'false') delete connectionObj.auth;
 
 const connectToDB = async () => mongoose.connect(`${process.env.DB_DIALECT}://${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_NAME}`, connectionObj);
 
 exports.connect = async () => {
   mongoose.Promise = global.Promise;
-  // mongoose.set('debug', true); -> Uncomment if wants to debug the mongodb operations
+  mongoose.set('debug', process.env.DB_DEBUG_MODE === 'true');
   try {
     await mongoose.connect(`${process.env.DB_DIALECT}://${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_NAME}`, connectionObj);
-    console.log('Successfully connected to the database');
+    console.info('Successfully connected to the database');
   } catch (error) {
-    console.log('Could not connect to the database. Exiting now...', error);
+    console.error('Could not connect to the database. Exiting now...', error);
     process.exit();
   }
 };
@@ -40,7 +38,7 @@ exports.removeDB = async () => {
   await connectToDB();
   const { connection } = mongoose;
   connection.once('open', async () => {
-    console.log(`Our Current Database Name : ${connection.db.databaseName}`);
+    console.warn(`Our Current Database Name : ${connection.db.databaseName}`);
     mongoose.connection.db.dropDatabase(console.info(`${connection.db.databaseName} database dropped.`));
   });
 };

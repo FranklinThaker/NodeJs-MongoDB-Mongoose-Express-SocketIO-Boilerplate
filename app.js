@@ -28,7 +28,6 @@ const initRoutes = (application) => {
       return;
     }
     routes.forEach((routePath) => require(routePath).routes(application));
-    console.info('No of routes files : ', routes.length);
   });
 };
 

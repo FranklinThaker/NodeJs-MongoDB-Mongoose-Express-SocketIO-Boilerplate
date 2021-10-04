@@ -1,14 +1,16 @@
 const rateLimit = require('express-rate-limit');
 const cors = require('cors');
+const { errorResponses } = require('../helpers/messages');
 
-const whitelist = [`${process.env.FRONT_END_URL}`, 'https://localhost:3000'];
+const whitelist = [`${process.env.FRONT_END_URL}`];
+const perIpTimeLimit = 15 * 60 * 1000; // 15 minutes
 
 const corsOptions = {
   origin(origin, callback) {
     if (whitelist.indexOf(origin) !== -1) {
       callback(null, true);
     } else {
-      callback(new Error('Not allowed by CORS'));
+      callback(new Error(errorResponses.CORS_BLOCK));
     }
   },
 };
@@ -18,10 +20,10 @@ const { errorHandler } = require('../middleware/errorHandler');
 const userRoutes = require('../controllers/user/user.routes');
 
 const apiLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
+  windowMs: perIpTimeLimit,
   max: 1000,
   message: {
-    error: 'Too many requests from this IP, please try again after 15 Minutes',
+    error: errorResponses.TOO_MANY_REQUESTS,
   },
 });
 

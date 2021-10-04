@@ -25,7 +25,7 @@ const io = socketIO(server, {
   origin: [`${process.env.FRONT_END_URL}:*`, 'https://localhost:*'],
 });
 
-if (process.env.ENVIRONMENT !== 'testing' && process.env.REDIS_SERVER === 'true') {
+if (process.env.REDIS_SERVER === 'true') {
   io.adapter(sioRedis({ host: 'localhost', port: 6379, requestsTimeout: 5000 }));
 }
 
@@ -71,10 +71,8 @@ process.on('SIGTERM', () => {
   });
 });
 
-if (process.env.ENVIRONMENT !== 'testing') {
-  server.listen(process.env.APP_PORT || 4000, () => {
-    console.info(chalk.blue(`Server & Socket listening on port ${process.env.APP_PORT}!`));
-  });
-}
+server.listen(process.env.APP_PORT || 4000, () => {
+  console.info(chalk.blue(`Server & Socket listening on port ${process.env.APP_PORT}!`));
+});
 
 module.exports = io;

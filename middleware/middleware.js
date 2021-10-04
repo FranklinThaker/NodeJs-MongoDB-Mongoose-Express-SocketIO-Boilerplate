@@ -9,13 +9,7 @@ const {
   decrypt,
 } = require('../helpers/helpers');
 
-const {
-  NO_TOKEN_PROVIDED,
-  TOKEN_EXPIRED,
-  USER_NOT_EXIST,
-  USER_ACC_DISABLED,
-  YOU_ARE_NOT_AUTHORIZED,
-} = require('../helpers/messages');
+const { errorResponses } = require('../helpers/messages');
 
 const UsersModel = require('../models/users');
 
@@ -25,7 +19,7 @@ exports.authentication = async (req, res, next) => {
   let decoded;
 
   if (!(req.headers && req.headers.authorization)) {
-    return errorResponse(req, res, NO_TOKEN_PROVIDED, 401);
+    return errorResponse(req, res, errorResponses.NO_TOKEN_PROVIDED, 401);
   }
 
   const encryptedToken = req.headers.authorization;
@@ -36,14 +30,14 @@ exports.authentication = async (req, res, next) => {
     jwt.verify(decryptedToken, process.env.SECRET);
   } catch (error) {
     if (error.message === 'jwt expired') {
-      return errorResponse(req, res, TOKEN_EXPIRED, 401);
+      return errorResponse(req, res, errorResponses.TOKEN_EXPIRED, 401);
     }
     return errorResponse(req, res, error.message, 401);
   }
 
   const data = await UsersModel.findOne({ _id: decoded._id });
-  if (!data) return errorResponse(req, res, USER_NOT_EXIST, 401);
-  if (!data.status) return errorResponse(req, res, USER_ACC_DISABLED, 401);
+  if (!data) return errorResponse(req, res, errorResponses.USER_NOT_EXIST, 401);
+  if (!data.status) return errorResponse(req, res, errorResponses.USER_ACC_DISABLED, 401);
 
   req.user = data;
 
@@ -54,45 +48,30 @@ exports.authentication = async (req, res, next) => {
   return next();
 };
 
+const validateURL = (req, authorizeURL) => {
+  const requestURL = req.originalUrl;
+  const systemURL = req.baseUrl + req.route.path;
+  const policyURL = authorizeURL;
+  if (requestURL === systemURL && systemURL === policyURL) return true;
+
+  const lastSegmentRequestURL = requestURL.substring(requestURL.lastIndexOf('/') + 1);
+  const lastSegmentSystemURL = systemURL.substring(systemURL.lastIndexOf('/') + 1);
+  const lastSegmentPolicyURL = policyURL.substring(policyURL.lastIndexOf('/') + 1);
+  if (lastSegmentRequestURL && lastSegmentSystemURL === lastSegmentPolicyURL) return true;
+
+  return false;
+};
+
 exports.authorization = async (req, res, next) => {
   for (let i = 0; i < authorizationData.length; i += 1) {
     if (authorizationData[i].role === res.locals.ROLE) {
-      if (authorizationData[i].method === res.locals.METHOD) {
-        const requestURL = req.originalUrl;
-        const systemURL = req.baseUrl + req.route.path;
-        const policyURL = authorizationData[i].url;
-
-        if (requestURL === systemURL && systemURL === policyURL) {
-          return next();
-        }
-
-        const lastSegmentRequestURL = requestURL.substring(requestURL.lastIndexOf('/') + 1);
-        const lastSegmentSystemURL = systemURL.substring(systemURL.lastIndexOf('/') + 1);
-        const lastSegmentPolicyURL = policyURL.substring(policyURL.lastIndexOf('/') + 1);
-
-        if (lastSegmentRequestURL && lastSegmentSystemURL === lastSegmentPolicyURL) {
-          return next();
-        }
-      } else if (authorizationData[i].method === '*') {
-        const requestURL = req.originalUrl;
-        const systemURL = req.baseUrl + req.route.path;
-        const policyURL = authorizationData[i].url;
-
-        if (requestURL === systemURL && systemURL === policyURL) {
-          return next();
-        }
-
-        const lastSegmentRequestURL = requestURL.substring(requestURL.lastIndexOf('/') + 1);
-        const lastSegmentSystemURL = systemURL.substring(systemURL.lastIndexOf('/') + 1);
-        const lastSegmentPolicyURL = policyURL.substring(policyURL.lastIndexOf('/') + 1);
-
-        if (lastSegmentRequestURL && lastSegmentSystemURL === lastSegmentPolicyURL) {
-          return next();
-        }
+      if (authorizationData[i].method === res.locals.METHOD || authorizationData[i].method === '*') {
+        const isValidated = validateURL(req, authorizationData[i].url);
+        if (isValidated) return next();
       }
     }
   }
-  return errorResponse(req, res, YOU_ARE_NOT_AUTHORIZED, 401);
+  return errorResponse(req, res, errorResponses.YOU_ARE_NOT_AUTHORIZED, 401);
 };
 
 exports.getROLES = async () => {

@@ -8,10 +8,7 @@ const {
   generateJWTtoken,
 } = require('../../helpers/helpers');
 
-const {
-  DATA_FETCHED_SUCCESSFULLY,
-  INVALID_UNAME_PWORD,
-} = require('../../helpers/messages');
+const { successResponses, errorResponses } = require('../../helpers/messages');
 
 exports.register = async (req, res) => {
   try {
@@ -30,7 +27,7 @@ exports.register = async (req, res) => {
       upsert: true,
     });
 
-    return successResponse(req, res, data, DATA_FETCHED_SUCCESSFULLY);
+    return successResponse(req, res, data, successResponses.DATA_FETCHED);
   } catch (error) {
     return errorResponse(req, res, error.message);
   }
@@ -41,7 +38,7 @@ exports.login = async (req, res) => {
     const param = { ...req.body, ...req.params, ...req.query };
 
     const user = await UsersModel.findOne({ email: param.email }).lean();
-    if (!user) return errorResponse(req, res, INVALID_UNAME_PWORD, 400);
+    if (!user) return errorResponse(req, res, errorResponses.INVALID_UNAME_PWORD, 400);
 
     const hashedPassword = crypto
       .createHash('md5')
@@ -49,7 +46,7 @@ exports.login = async (req, res) => {
       .digest('hex');
 
     const output = hashedPassword === user.password;
-    if (!output) return errorResponse(req, res, INVALID_UNAME_PWORD, 401);
+    if (!output) return errorResponse(req, res, errorResponses.INVALID_UNAME_PWORD, 401);
 
     const encryptedToken = encrypt(generateJWTtoken({ _id: user._id, role: user.role }));
 
@@ -58,7 +55,7 @@ exports.login = async (req, res) => {
       encryptedToken,
     };
 
-    return successResponse(req, res, data, DATA_FETCHED_SUCCESSFULLY);
+    return successResponse(req, res, data, successResponses.DATA_FETCHED);
   } catch (error) {
     return errorResponse(req, res, error.message);
   }
@@ -67,7 +64,7 @@ exports.login = async (req, res) => {
 exports.profile = async (req, res) => {
   try {
     const data = await UsersModel.findOne({ _id: req.user._id });
-    return successResponse(req, res, data, DATA_FETCHED_SUCCESSFULLY);
+    return successResponse(req, res, data, successResponses.DATA_FETCHED);
   } catch (error) {
     return errorResponse(req, res, error.message);
   }
@@ -76,7 +73,7 @@ exports.profile = async (req, res) => {
 exports.getAll = async (req, res) => {
   try {
     const data = await UsersModel.find({ });
-    return successResponse(req, res, data, DATA_FETCHED_SUCCESSFULLY);
+    return successResponse(req, res, data, successResponses.DATA_FETCHED);
   } catch (error) {
     return errorResponse(req, res, error.message);
   }
@@ -87,7 +84,7 @@ exports.findById = async (req, res) => {
     const param = { ...req.body, ...req.params, ...req.query };
 
     const data = await UsersModel.findOne({ _id: param.userId });
-    return successResponse(req, res, data, DATA_FETCHED_SUCCESSFULLY);
+    return successResponse(req, res, data, successResponses.DATA_FETCHED);
   } catch (error) {
     return errorResponse(req, res, error.message);
   }
@@ -98,7 +95,7 @@ exports.deleteById = async (req, res) => {
     const param = { ...req.body, ...req.params, ...req.query };
 
     const data = await UsersModel.deleteOne({ _id: param.userId });
-    return successResponse(req, res, data, DATA_FETCHED_SUCCESSFULLY);
+    return successResponse(req, res, data, successResponses.DATA_DELETED);
   } catch (error) {
     return errorResponse(req, res, error.message);
   }

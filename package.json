@@ -20,7 +20,6 @@
     "Express",
     "SocketIO",
     "Socket-Clustering",
-    "Jest",
     "ES-Lint",
     "Authentication",
     "Authorization"
