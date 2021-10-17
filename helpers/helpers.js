@@ -25,7 +25,7 @@ exports.errorResponse = (req, res, message = errorMessages.SOMETHING_WENT_WRONG,
   });
 };
 
-exports.generateJWTtoken = (object, secretKey = envConstants.SECRET) => jwt.sign(JSON.parse(JSON.stringify(object)), secretKey, { expiresIn: envConstants.JWT_TOKEN_EXPIRATION_TIME });
+exports.generateJWTtoken = (object, secretKey = envConstants.SECRET) => jwt.sign(object, secretKey, { expiresIn: envConstants.JWT_TOKEN_EXPIRATION_TIME });
 
 exports.decrypt = (text) => {
   const simpleCrypto = new SimpleCrypto(envConstants.ENCRYPTION_KEY);
