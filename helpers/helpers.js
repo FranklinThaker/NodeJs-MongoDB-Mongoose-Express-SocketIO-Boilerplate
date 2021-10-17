@@ -1,15 +1,11 @@
 const jwt = require('jsonwebtoken');
 const SimpleCrypto = require('simple-crypto-js').default;
 const crypto = require('crypto');
+const { envConstants } = require('./constants');
 
-const JWT_TOKEN_EXPIRATION_TIME = '7d';
+const { errorMessages, successMessages } = require('./messages');
 
-const { errorResponses, successResponses } = require('./messages');
-
-const encryptionKey = process.env.ENCRYPTION_KEY || 'ABCDEFGHIJKLMNOPQRSTUVWXYZ123456';
-const secretKeyForJWT = process.env.SECRET || 'PHRANKLIN';
-
-exports.successResponse = (req, res, data, message = successResponses.OPERATION_COMPLETED, code = 200) => {
+exports.successResponse = (req, res, data, message = successMessages.OPERATION_COMPLETED, code = 200) => {
   res.status(code);
   res.send({
     code,
@@ -19,7 +15,7 @@ exports.successResponse = (req, res, data, message = successResponses.OPERATION_
   });
 };
 
-exports.errorResponse = (req, res, message = errorResponses.SOMETHING_WENT_WRONG, code = 500) => {
+exports.errorResponse = (req, res, message = errorMessages.SOMETHING_WENT_WRONG, code = 500) => {
   res.status(code);
   res.send({
     code,
@@ -29,16 +25,16 @@ exports.errorResponse = (req, res, message = errorResponses.SOMETHING_WENT_WRONG
   });
 };
 
-exports.generateJWTtoken = (object, secretKey = secretKeyForJWT) => jwt.sign(JSON.parse(JSON.stringify(object)), secretKey, { expiresIn: JWT_TOKEN_EXPIRATION_TIME });
+exports.generateJWTtoken = (object, secretKey = envConstants.SECRET) => jwt.sign(JSON.parse(JSON.stringify(object)), secretKey, { expiresIn: envConstants.JWT_TOKEN_EXPIRATION_TIME });
 
 exports.decrypt = (text) => {
-  const simpleCrypto = new SimpleCrypto(encryptionKey);
-  const chiperText = simpleCrypto.decrypt(text);
-  return chiperText;
+  const simpleCrypto = new SimpleCrypto(envConstants.ENCRYPTION_KEY);
+  const plainText = simpleCrypto.decrypt(text);
+  return plainText;
 };
 
 exports.encrypt = (text) => {
-  const simpleCrypto = new SimpleCrypto(encryptionKey);
+  const simpleCrypto = new SimpleCrypto(envConstants.ENCRYPTION_KEY);
   const chiperText = simpleCrypto.encrypt(text);
   return chiperText;
 };

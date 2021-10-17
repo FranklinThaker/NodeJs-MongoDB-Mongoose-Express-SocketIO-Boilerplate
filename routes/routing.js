@@ -1,8 +1,9 @@
 const rateLimit = require('express-rate-limit');
 const cors = require('cors');
-const { errorResponses } = require('../helpers/messages');
+const { errorMessages } = require('../helpers/messages');
+const { envConstants } = require('../helpers/constants');
 
-const whitelist = [`${process.env.FRONT_END_URL}`];
+const whitelist = [`${envConstants.FRONT_END_URL}`];
 const perIpTimeLimit = 15 * 60 * 1000; // 15 minutes
 
 const corsOptions = {
@@ -10,7 +11,7 @@ const corsOptions = {
     if (whitelist.indexOf(origin) !== -1) {
       callback(null, true);
     } else {
-      callback(new Error(errorResponses.CORS_BLOCK));
+      callback(new Error(errorMessages.CORS_BLOCK));
     }
   },
 };
@@ -23,7 +24,7 @@ const apiLimiter = rateLimit({
   windowMs: perIpTimeLimit,
   max: 1000,
   message: {
-    error: errorResponses.TOO_MANY_REQUESTS,
+    error: errorMessages.TOO_MANY_REQUESTS,
   },
 });
 

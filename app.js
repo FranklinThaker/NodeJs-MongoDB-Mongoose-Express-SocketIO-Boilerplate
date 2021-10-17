@@ -1,5 +1,3 @@
-require('dotenv').config();
-
 const express = require('express');
 const logger = require('morgan');
 const cors = require('cors');
@@ -33,6 +31,6 @@ const initRoutes = (application) => {
 
 initRoutes(app);
 
-getROLES(); // to generate the ROLE object for role based authorization/authentication
+getROLES(); // to generate the ROLE object for role based authentication/authorization
 
 module.exports = app;

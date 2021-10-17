@@ -1,15 +1,14 @@
-require('dotenv').config();
-
 const jwt = require('jsonwebtoken');
 const path = require('path');
 const csv = require('csvtojson');
+const { envConstants } = require('../helpers/constants');
 
 const {
   errorResponse,
   decrypt,
 } = require('../helpers/helpers');
 
-const { errorResponses } = require('../helpers/messages');
+const { errorMessages } = require('../helpers/messages');
 
 const UsersModel = require('../models/users');
 
@@ -19,7 +18,7 @@ exports.authentication = async (req, res, next) => {
   let decoded;
 
   if (!(req.headers && req.headers.authorization)) {
-    return errorResponse(req, res, errorResponses.NO_TOKEN_PROVIDED, 401);
+    return errorResponse(req, res, errorMessages.NO_TOKEN_PROVIDED, 401);
   }
 
   const encryptedToken = req.headers.authorization;
@@ -27,17 +26,17 @@ exports.authentication = async (req, res, next) => {
   try {
     const decryptedToken = decrypt(encryptedToken);
     decoded = jwt.decode(decryptedToken);
-    jwt.verify(decryptedToken, process.env.SECRET);
+    jwt.verify(decryptedToken, envConstants.SECRET);
   } catch (error) {
     if (error.message === 'jwt expired') {
-      return errorResponse(req, res, errorResponses.TOKEN_EXPIRED, 401);
+      return errorResponse(req, res, errorMessages.TOKEN_EXPIRED, 401);
     }
     return errorResponse(req, res, error.message, 401);
   }
 
   const data = await UsersModel.findOne({ _id: decoded._id });
-  if (!data) return errorResponse(req, res, errorResponses.USER_NOT_EXIST, 401);
-  if (!data.status) return errorResponse(req, res, errorResponses.USER_ACC_DISABLED, 401);
+  if (!data) return errorResponse(req, res, errorMessages.USER_NOT_EXIST, 401);
+  if (!data.status) return errorResponse(req, res, errorMessages.USER_ACC_DISABLED, 401);
 
   req.user = data;
 
@@ -71,7 +70,7 @@ exports.authorization = async (req, res, next) => {
       }
     }
   }
-  return errorResponse(req, res, errorResponses.YOU_ARE_NOT_AUTHORIZED, 401);
+  return errorResponse(req, res, errorMessages.YOU_ARE_NOT_AUTHORIZED, 401);
 };
 
 exports.getROLES = async () => {

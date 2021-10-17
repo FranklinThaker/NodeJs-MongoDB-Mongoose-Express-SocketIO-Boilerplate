@@ -1,18 +1,18 @@
-require('dotenv').config();
-
 const https = require('https');
 const http = require('http');
 const socketIO = require('socket.io');
 const fs = require('fs');
 const chalk = require('chalk');
 const sioRedis = require('socket.io-redis');
+const { envConstants } = require('./helpers/constants');
 
 const UsersModel = require('./models/users');
 
 const app = require('./app');
 
-const key = fs.existsSync(`${__dirname}/certs/key.pem`) && fs.readFileSync(`${__dirname}/certs/key.pem`);
-const cert = fs.existsSync(`${__dirname}/certs/cert.pem`) && fs.readFileSync(`${__dirname}/certs/cert.pem`);
+const cert = fs.existsSync(envConstants.SSL_CERT_PATH) && fs.readFileSync(envConstants.SSL_CERT_PATH);
+const key = fs.existsSync(envConstants.SSL_KEY_PATH) && fs.readFileSync(envConstants.SSL_KEY_PATH);
+
 let server;
 
 if (key && cert) {
@@ -22,10 +22,10 @@ if (key && cert) {
 }
 
 const io = socketIO(server, {
-  origin: [`${process.env.FRONT_END_URL}:*`, 'https://localhost:*'],
+  origin: [`${envConstants.FRONT_END_URL}:*`, 'https://localhost:*'],
 });
 
-if (process.env.REDIS_SERVER === 'true') {
+if (envConstants.REDIS_SERVER === 'true') {
   io.adapter(sioRedis({ host: 'localhost', port: 6379, requestsTimeout: 5000 }));
 }
 
@@ -71,8 +71,8 @@ process.on('SIGTERM', () => {
   });
 });
 
-server.listen(process.env.APP_PORT || 4000, () => {
-  console.info(chalk.blue(`Server & Socket listening on port ${process.env.APP_PORT}!`));
+server.listen(envConstants.APP_PORT || 4000, () => {
+  console.info(chalk.blue(`Server & Socket listening on port ${envConstants.APP_PORT}!`));
 });
 
 module.exports = io;

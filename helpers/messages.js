@@ -1,10 +1,12 @@
-exports.successResponses = {
+exports.successMessages = {
   DATA_FETCHED: 'Data fetched.',
   DATA_DELETED: 'Data deleted.',
   OPERATION_COMPLETED: 'Operation completed.',
+  REGISTRATION_DONE: 'Registration successfully completed.',
+  LOGGED_IN: 'User successfully logged in.',
 };
 
-exports.errorResponses = {
+exports.errorMessages = {
   TOKEN_EXPIRED: 'Token expired.',
   USER_NOT_EXIST: 'User does not exist.',
   NO_TOKEN_PROVIDED: 'No token provided.',

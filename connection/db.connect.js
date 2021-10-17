@@ -1,11 +1,10 @@
-require('dotenv').config();
-
 const mongoose = require('mongoose');
+const { envConstants } = require('../helpers/constants');
 
 const connectionObj = {
   auth: {
-    user: process.env.DB_USER,
-    password: process.env.DB_PASS,
+    user: envConstants.DB_USER,
+    password: envConstants.DB_PASS,
   },
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -13,15 +12,15 @@ const connectionObj = {
   useCreateIndex: true,
 };
 
-if (process.env.AUTHENTICATION === 'false') delete connectionObj.auth;
+if (envConstants.AUTHENTICATION === 'false') delete connectionObj.auth;
 
-const connectToDB = async () => mongoose.connect(`${process.env.DB_DIALECT}://${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_NAME}`, connectionObj);
+const connectToDB = async () => mongoose.connect(`${envConstants.DB_DIALECT}://${envConstants.DB_HOST}:${envConstants.DB_PORT}/${envConstants.DB_NAME}`, connectionObj);
 
 exports.connect = async () => {
   mongoose.Promise = global.Promise;
-  mongoose.set('debug', process.env.DB_DEBUG_MODE === 'true');
+  mongoose.set('debug', envConstants.DB_DEBUG_MODE === 'true');
   try {
-    await mongoose.connect(`${process.env.DB_DIALECT}://${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_NAME}`, connectionObj);
+    await mongoose.connect(`${envConstants.DB_DIALECT}://${envConstants.DB_HOST}:${envConstants.DB_PORT}/${envConstants.DB_NAME}`, connectionObj);
     console.info('Successfully connected to the database');
   } catch (error) {
     console.error('Could not connect to the database. Exiting now...', error);
