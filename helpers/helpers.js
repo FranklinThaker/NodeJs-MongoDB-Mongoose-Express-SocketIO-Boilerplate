@@ -47,3 +47,33 @@ exports.comparePassword = (paramPass, dbPass) => {
   if (password === dbPass) return true;
   return false;
 };
+
+exports.genericValidator = (allowedParams, requiredParams) => (req, res, next) => {
+  const param = { ...req.body, ...req.params, ...req.query };
+
+  let failed = false;
+  const invalidRequiredParams = [];
+  const invalidAllowedParams = [];
+
+  Object.keys(param).forEach((element) => {
+    if (!allowedParams.includes(element)) {
+      failed = true;
+      invalidAllowedParams.push(element);
+    }
+  });
+
+  requiredParams.forEach((element) => {
+    if (!Object.prototype.hasOwnProperty.call(param, element)) {
+      failed = true;
+      invalidRequiredParams.push(element);
+    }
+  });
+
+  const invalidString = {
+    'Required parameters that are not provided': invalidRequiredParams,
+    'Not allowed parameters that are provided': invalidAllowedParams,
+  };
+
+  if (failed) return exports.errorResponse(req, res, errorMessages.INVALID_PARAMS, 400, invalidString);
+  return next();
+};

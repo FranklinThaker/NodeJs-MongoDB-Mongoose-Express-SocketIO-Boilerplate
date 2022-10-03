@@ -1,14 +1,15 @@
 const crypto = require('crypto');
-const UsersModel = require('../../models/users');
+const UsersModel = require('../../../models/users');
 
 const {
   successResponse,
   errorResponse,
   encrypt,
   generateJWTtoken,
-} = require('../../helpers/helpers');
+  comparePassword,
+} = require('../../../helpers/helpers');
 
-const { successMessages, errorMessages } = require('../../helpers/messages');
+const { successMessages, errorMessages } = require('../../../helpers/messages');
 
 exports.register = async (req, res) => {
   try {
@@ -22,6 +23,8 @@ exports.register = async (req, res) => {
       name: param.name,
       email: param.email.toLowerCase(),
       password: param.password,
+      role: param.role || 'user',
+      status: true,
     }, {
       new: true,
       upsert: true,
@@ -37,15 +40,10 @@ exports.login = async (req, res) => {
   try {
     const param = { ...req.body, ...req.params, ...req.query };
 
-    const user = await UsersModel.exists({ email: param.email });
-    if (!user) return errorResponse(req, res, errorMessages.INVALID_UNAME_PWORD, 400);
+    const user = await UsersModel.findOne({ email: param.email }).lean();
+    if (!user) return errorResponse(req, res, errorMessages.INVALID_UNAME_PWORD, 401);
 
-    const hashedPassword = crypto
-      .createHash('md5')
-      .update(param.password || '')
-      .digest('hex');
-
-    const output = hashedPassword === user.password;
+    const output = comparePassword(param.password, user.password);
     if (!output) return errorResponse(req, res, errorMessages.INVALID_UNAME_PWORD, 401);
 
     const encryptedToken = encrypt(generateJWTtoken({ _id: user._id, role: user.role }));
@@ -62,31 +60,19 @@ exports.login = async (req, res) => {
 };
 
 exports.profile = async (req, res) => {
-  try {
-    const data = await UsersModel.findOne({ _id: req.user._id }).lean();
-    return successResponse(req, res, data, successMessages.DATA_FETCHED);
-  } catch (error) {
-    return errorResponse(req, res, error.message);
-  }
+  const data = await UsersModel.findOne({ _id: req.user._id }).lean();
+  return successResponse(req, res, data, successMessages.DATA_FETCHED);
 };
 
 exports.getAll = async (req, res) => {
-  try {
-    const data = await UsersModel.find({}).lean();
-    return successResponse(req, res, data, successMessages.DATA_FETCHED);
-  } catch (error) {
-    return errorResponse(req, res, error.message);
-  }
+  const data = await UsersModel.find({}).lean();
+  return successResponse(req, res, data, successMessages.DATA_FETCHED);
 };
 
 exports.findById = async (req, res) => {
-  try {
-    const param = { ...req.body, ...req.params, ...req.query };
-    const data = await UsersModel.findOne({ _id: param.userId }).lean();
-    return successResponse(req, res, data, successMessages.DATA_FETCHED);
-  } catch (error) {
-    return errorResponse(req, res, error.message);
-  }
+  const param = { ...req.body, ...req.params, ...req.query };
+  const data = await UsersModel.findOne({ _id: param.userId }).lean();
+  return successResponse(req, res, data, successMessages.DATA_FETCHED);
 };
 
 exports.deleteById = async (req, res) => {

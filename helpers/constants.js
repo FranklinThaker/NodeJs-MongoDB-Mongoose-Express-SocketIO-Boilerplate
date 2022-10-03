@@ -3,11 +3,11 @@ require('dotenv').config();
 exports.envConstants = {
   DB_HOST: process.env.DB_HOST || 'localhost',
   DB_PORT: process.env.DB_PORT || 27017,
-  DB_NAME: process.env.DB_NAME,
+  DB_NAME: process.env.DB_NAME || 'test_db',
   DB_PASS: process.env.DB_PASS,
   DB_USER: process.env.DB_USER,
   DB_DIALECT: process.env.DB_DIALECT || 'mongodb',
-  DB_DEBUG_MODE: process.env.DB_DEBUG_MODE || 'true',
+  DB_DEBUG_MODE: process.env.DB_DEBUG_MODE || 'false',
   APP_HOST: process.env.APP_HOST || 'localhost',
   APP_PORT: process.env.APP_PORT || 4000,
   SECRET: process.env.SECRET || 'PHRANKLIN',
