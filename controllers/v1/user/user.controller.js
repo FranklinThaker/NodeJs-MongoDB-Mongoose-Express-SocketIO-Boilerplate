@@ -1,5 +1,4 @@
 const crypto = require('crypto');
-const UsersModel = require('../../../models/users');
 
 const {
   successResponse,
@@ -10,6 +9,7 @@ const {
 } = require('../../../helpers/helpers');
 
 const { successMessages, errorMessages } = require('../../../helpers/messages');
+const UsersModel = require('../../../models/users');
 
 exports.register = async (req, res) => {
   try {
@@ -46,11 +46,11 @@ exports.login = async (req, res) => {
     const output = comparePassword(param.password, user.password);
     if (!output) return errorResponse(req, res, errorMessages.INVALID_UNAME_PWORD, 401);
 
-    const encryptedToken = encrypt(generateJWTtoken({ _id: user._id, role: user.role }));
+    const token = encrypt(generateJWTtoken({ _id: user._id, role: user.role }));
 
     const data = {
       user,
-      encryptedToken,
+      token,
     };
 
     return successResponse(req, res, data, successMessages.LOGGED_IN);
@@ -70,9 +70,13 @@ exports.getAll = async (req, res) => {
 };
 
 exports.findById = async (req, res) => {
-  const param = { ...req.body, ...req.params, ...req.query };
-  const data = await UsersModel.findOne({ _id: param.userId }).lean();
-  return successResponse(req, res, data, successMessages.DATA_FETCHED);
+  try {
+    const param = { ...req.body, ...req.params, ...req.query };
+    const data = await UsersModel.findOne({ _id: param.userId }).lean();
+    return successResponse(req, res, data, successMessages.DATA_FETCHED);
+  } catch (error) {
+    return errorResponse(req, res, error.message);
+  }
 };
 
 exports.deleteById = async (req, res) => {

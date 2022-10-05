@@ -1,14 +1,10 @@
-const rateLimit = require('express-rate-limit');
 const cors = require('cors');
-const { errorMessages } = require('../helpers/messages');
+const rateLimit = require('express-rate-limit');
+const userRoutes = require('../controllers/v1/user/user.routes');
 const { envConstants } = require('../helpers/constants');
+const { errorMessages } = require('../helpers/messages');
 
-let whitelist = [`${envConstants.FRONT_END_URL}`];
-if (process.env.NODE_ENV !== 'test') {
-  whitelist = [`${envConstants.FRONT_END_URL}`];
-} else {
-  whitelist = ['http://localhost'];
-}
+const whitelist = [`${envConstants.FRONT_END_URL}`, `${envConstants.APP_HOST}:${envConstants.APP_PORT}`, 'http://localhost'];
 
 const perIpTimeLimit = 15 * 60 * 1000; // 15 minutes
 
@@ -23,8 +19,6 @@ const corsOptions = {
 };
 
 const { errorHandler } = require('../middleware/errorHandler');
-
-const userRoutes = require('../controllers/v1/user/user.routes');
 
 const apiLimiter = rateLimit({
   windowMs: perIpTimeLimit,

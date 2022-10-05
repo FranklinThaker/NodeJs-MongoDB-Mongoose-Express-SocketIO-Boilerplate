@@ -1,4 +1,3 @@
-const request = require('supertest');
 const {
   expect,
   it,
@@ -7,8 +6,9 @@ const {
   beforeEach,
 } = require('@jest/globals');
 const sinon = require('sinon');
-const { removeDB } = require('../../../connection/db.connect');
+const request = require('supertest');
 const app = require('../../../app');
+const { removeDB } = require('../../../connection/db.connect');
 const UsersModel = require('../../../models/users');
 
 let authorizationToken;
@@ -33,7 +33,7 @@ const login = async () => {
       email: 'frank@test.com',
       password: 'pwd',
     });
-  authorizationToken = res.body.data.encryptedToken;
+  authorizationToken = res.body.data.token;
   user = res.body.data.user;
 };
 
@@ -132,12 +132,20 @@ describe('Happy Path -> Users', () => {
     expect(UserData.status).toBe(true);
   });
 
-  it('should not find a user profile', async () => {
+  it('should not find a user profile because of wrong profile id [correct mongoose id]', async () => {
     await login();
     const res = await request(app)
       .get('/api/v1/account/users/507f191e810c19729de860ea')
       .set('authorization', authorizationToken);
     expect(res.statusCode).toBe(200);
+  });
+
+  it('should not find a user profile because of wrong profile id [wrong mongoose id]', async () => {
+    await login();
+    const res = await request(app)
+      .get('/api/v1/account/users/test123')
+      .set('authorization', authorizationToken);
+    expect(res.statusCode).toBe(500);
   });
 
   it('should not delete a user profile', async () => {
@@ -172,6 +180,12 @@ describe('Happy Path -> Users', () => {
     expect(UserData.password).toBe('9003d1df22eb4d3820015070385194c8');
     expect(UserData.role).toBe('user');
     expect(UserData.status).toBe(true);
+  });
+
+  it('should load api-docs', async () => {
+    const res = await request(app)
+      .get('/');
+    expect(res.statusCode).toBe(302);
   });
 });
 
@@ -274,7 +288,7 @@ describe('Sad Path -> Users', () => {
         email: 'frankthaker@test.com',
         password: 'pwd',
       });
-    adminRoleToken = loginApi.body.data.encryptedToken;
+    adminRoleToken = loginApi.body.data.token;
     const res = await request(app)
       .get('/api/v1/account/profile')
       .set('authorization', adminRoleToken);

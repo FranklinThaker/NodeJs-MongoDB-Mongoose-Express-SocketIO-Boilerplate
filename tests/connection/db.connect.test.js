@@ -4,8 +4,8 @@ const {
   expect,
 } = require('@jest/globals');
 
-const sinon = require('sinon');
 const mongoose = require('mongoose');
+const sinon = require('sinon');
 const connectionFile = require('../../connection/db.connect');
 const { connect, removeDB } = require('../../connection/db.connect');
 

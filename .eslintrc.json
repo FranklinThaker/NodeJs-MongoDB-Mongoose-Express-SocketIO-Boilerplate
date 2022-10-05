@@ -1,4 +1,7 @@
 {
+    "env": {
+        "commonjs": true
+    },
     "extends": "airbnb-base",
     "rules": {
         "comma-dangle": [
@@ -38,13 +41,55 @@
             {
                 "MemberExpression": 1
             }
+        ],
+        "sort-imports": [
+            "error",
+            {
+                "ignoreCase": false,
+                "ignoreDeclarationSort": false,
+                "ignoreMemberSort": false,
+                "memberSyntaxSortOrder": [
+                    "none",
+                    "all",
+                    "multiple",
+                    "single"
+                ],
+                "allowSeparatedGroups": false
+            }
+        ],
+        "import/order": [
+            1,
+            {
+                "groups": [
+                    "external",
+                    "builtin",
+                    "internal",
+                    "sibling",
+                    "parent",
+                    "index"
+                ],
+                "pathGroupsExcludedImportTypes": [
+                    "internal"
+                ],
+                "alphabetize": {
+                    "order": "asc",
+                    "caseInsensitive": true
+                }
+            }
         ]
     },
-    "overrides" : [
+    "overrides": [
         {
-          "files": ["*.yaml", "*.yml"],
-          "plugins": ["yaml"],
-          "extends": ["plugin:yaml/recommended"]
+            "files": [
+                "*.yaml",
+                "*.yml"
+            ],
+            "plugins": [
+                "yaml"
+            ],
+            "extends": [
+                "plugin:yaml/recommended"
+            ]
         }
     ]
 }

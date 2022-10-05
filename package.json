@@ -5,8 +5,8 @@
   "main": "server.js",
   "scripts": {
     "start": "node --max-http-header-size 15000 --max-old-space-size=2048 server.js",
-    "lint": "./node_modules/.bin/eslint --ignore-path .gitignore . --fix",
-    "test": "jest"
+    "lint": "eslint --ignore-path .gitignore . --fix",
+    "test": "npm run lint && jest"
   },
   "husky": {
     "hooks": {
@@ -33,7 +33,7 @@
     "cross-env": "^7.0.3",
     "eslint": "^7.26.0",
     "eslint-config-airbnb": "^18.2.1",
-    "eslint-plugin-import": "^2.23.1",
+    "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-jsx-a11y": "^6.4.1",
     "eslint-plugin-react": "^7.23.2",
     "eslint-plugin-react-hooks": "^4.2.0",
@@ -58,6 +58,7 @@
     "simple-crypto-js": "^3.0.0",
     "socket.io": "^4.1.1",
     "socket.io-redis": "^6.1.1",
+    "swagger-ui-express": "^4.5.0",
     "uuid": "^8.3.2"
   }
 }

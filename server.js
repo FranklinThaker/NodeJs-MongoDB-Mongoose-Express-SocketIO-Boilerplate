@@ -1,14 +1,14 @@
-const https = require('https');
-const http = require('http');
-const socketIO = require('socket.io');
-const fs = require('fs');
+/* eslint-disable no-console */
 const chalk = require('chalk');
+const socketIO = require('socket.io');
 const sioRedis = require('socket.io-redis');
+const fs = require('fs');
+const http = require('http');
+const https = require('https');
+const app = require('./app');
 const { envConstants } = require('./helpers/constants');
 
 const UsersModel = require('./models/users');
-
-const app = require('./app');
 
 const cert = fs.existsSync(envConstants.SSL_CERT_PATH) && fs.readFileSync(envConstants.SSL_CERT_PATH);
 const key = fs.existsSync(envConstants.SSL_KEY_PATH) && fs.readFileSync(envConstants.SSL_KEY_PATH);
@@ -72,7 +72,7 @@ process.on('SIGTERM', () => {
 });
 
 server.listen(envConstants.APP_PORT || 4000, () => {
-  console.info(chalk.blue(`Server & Socket listening on port ${envConstants.APP_PORT}!`));
+  console.info(`Server & Socket listening on port ${chalk.blue(`${envConstants.APP_HOST}:${envConstants.APP_PORT}`)}`);
 });
 
 module.exports = io;

@@ -6,12 +6,6 @@ on:
     branches: [ main ]
 
 env:
-  DB_NAME : testing
-  DB_HOST : localhost
-  DB_DIALECT : mongodb
-  NODE_ENV : testing
-  APP_PORT : 4000
-  SECRET : TOP_SECRET
   ENCRYPTION_KEY : ${{secrets.ENCRYPTION_KEY}}
   
 jobs:
@@ -47,6 +41,8 @@ jobs:
     - run: sudo ./MongoDB-Setup.sh
     - run: sudo apt-get install redis-server
     - run: sudo npm install --unsafe-perm
+    - run: sudo npm test
+
     # - run: sudo npm run test 
 
     # - name: Continous Code Delivery to Live Server

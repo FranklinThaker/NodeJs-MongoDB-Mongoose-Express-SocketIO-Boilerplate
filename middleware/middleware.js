@@ -1,6 +1,6 @@
+const csv = require('csvtojson');
 const jwt = require('jsonwebtoken');
 const path = require('path');
-const csv = require('csvtojson');
 const { envConstants } = require('../helpers/constants');
 
 const {
@@ -21,10 +21,10 @@ exports.authentication = async (req, res, next) => {
     return errorResponse(req, res, errorMessages.NO_TOKEN_PROVIDED, 401);
   }
 
-  const encryptedToken = req.headers.authorization;
+  const token = req.headers.authorization;
 
   try {
-    const decryptedToken = decrypt(encryptedToken);
+    const decryptedToken = decrypt(token);
     decoded = jwt.decode(decryptedToken);
     jwt.verify(decryptedToken, envConstants.SECRET);
   } catch (error) {

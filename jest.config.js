@@ -11,6 +11,7 @@ const config = {
     '!**/node_modules/**',
     '!**/server.js/**',
     '!**/jest.config.js/**',
+    '!**/api_docs/**',
   ],
   coverageReporters: [
     'text',
