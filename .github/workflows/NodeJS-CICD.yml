@@ -5,22 +5,27 @@ on:
   push:
     branches: [ main ]
 
+  pull_request:
+    types: [opened, closed]
+    branches: [ develop, main ]
+
 env:
   ENCRYPTION_KEY : ${{secrets.ENCRYPTION_KEY}}
   
 jobs:
     
-  Any-Commits-To-Main-Branch:
+  PR-Or-Any-New-pushes:
+    if: github.event.pull_request.merged == false || github.event_name == 'push'
     runs-on: ubuntu-18.04
 
     strategy:
       matrix:
-        node-version: [12.x, 14.x, 15.x]
+        node-version: [14.x, 15.x, 16.x]
   
     steps:
     - uses: actions/checkout@v2
       with:
-        ref : main # branch name on which this CI will run
+        ref : ${{ github.head_ref }} # branch name on which this CI will run
 
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v2
