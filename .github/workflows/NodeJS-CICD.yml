@@ -50,7 +50,7 @@ jobs:
     - run: sudo ./MongoDB-Setup.sh
     - run: sudo apt-get install redis-server
     - run: sudo npm install --unsafe-perm
-    - run: sudo npm test
+    - run: npm test
 
     # - run: sudo npm run test 
 
