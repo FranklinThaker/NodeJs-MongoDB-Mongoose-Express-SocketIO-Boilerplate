@@ -41,6 +41,10 @@ jobs:
         echo "APP_PORT=${APP_PORT}" >> .env
         echo "SECRET=${SECRET}" >> .env
         echo "ENCRYPTION_KEY=${ENCRYPTION_KEY}" >> .env
+        
+        mkdir ~/.npm-global
+        npm config set prefix '~/.npm-global'
+        export PATH=~/.npm-global/bin:$PATH
  
     - run: sudo chmod ugoa+x *.sh
     - run: sudo ./MongoDB-Setup.sh
