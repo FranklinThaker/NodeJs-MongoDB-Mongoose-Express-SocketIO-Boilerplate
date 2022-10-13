@@ -17,7 +17,7 @@ const config = {
     'text',
     'text-summary',
   ],
-  testTimeout: 10000,
+  testTimeout: 110000,
 };
 
 module.exports = config;
