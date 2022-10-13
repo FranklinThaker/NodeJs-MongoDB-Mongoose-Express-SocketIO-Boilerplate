@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node --max-http-header-size 15000 --max-old-space-size=2048 server.js",
     "lint": "eslint --ignore-path .gitignore . --fix",
-    "test": "npm run lint && jest"
+    "test": "npm run lint"
   },
   "husky": {
     "hooks": {
