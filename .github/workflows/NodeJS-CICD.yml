@@ -23,12 +23,12 @@ jobs:
         node-version: [14.x, 15.x, 16.x]
   
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         ref : ${{ github.head_ref }} # branch name on which this CI will run
 
     - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v2
+      uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node-version }}
 
