@@ -52,7 +52,6 @@
     "express-rate-limit": "^5.2.6",
     "husky": "^6.0.0",
     "jsonwebtoken": "^8.5.1",
-    "mongodb-memory-server": "^8.9.3",
     "mongoose": "^5.12.11",
     "morgan": "^1.10.0",
     "simple-crypto-js": "^3.0.0",
