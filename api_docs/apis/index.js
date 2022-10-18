@@ -1,5 +1,7 @@
 const users = require('./users');
 
 module.exports = {
-  ...users,
+  paths: {
+    ...users.paths,
+  },
 };
