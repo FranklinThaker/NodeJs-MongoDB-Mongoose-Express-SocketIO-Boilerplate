@@ -15,13 +15,13 @@ exports.successResponse = (req, res, data, message = successMessages.OPERATION_C
   });
 };
 
-exports.errorResponse = (req, res, message = errorMessages.SOMETHING_WENT_WRONG, code = 500) => {
+exports.errorResponse = (req, res, message = errorMessages.SOMETHING_WENT_WRONG, code = 500, data = null) => {
   res.status(code);
   res.send({
     code,
     success: false,
     message,
-    data: null,
+    data,
   });
 };
 
