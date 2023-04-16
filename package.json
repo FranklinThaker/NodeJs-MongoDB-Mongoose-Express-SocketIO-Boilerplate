@@ -44,6 +44,7 @@
     "supertest": "^6.2.4"
   },
   "dependencies": {
+    "bluebird": "^3.7.2",
     "chalk": "^4.1.1",
     "cors": "^2.8.5",
     "csvtojson": "^2.0.10",
@@ -51,7 +52,7 @@
     "express": "^4.17.1",
     "express-rate-limit": "^5.2.6",
     "husky": "^6.0.0",
-    "jsonwebtoken": "^8.5.1",
+    "jsonwebtoken": "^9.0.0",
     "mongoose": "^5.12.11",
     "morgan": "^1.10.0",
     "simple-crypto-js": "^3.0.0",
