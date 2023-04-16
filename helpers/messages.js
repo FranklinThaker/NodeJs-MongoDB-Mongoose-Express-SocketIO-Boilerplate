@@ -17,4 +17,5 @@ exports.errorMessages = {
   YOU_ARE_NOT_AUTHORIZED: 'You are not authorized to access this route.',
   TOO_MANY_REQUESTS: 'Too many requests from this IP, please try again after 15 Minutes',
   CORS_BLOCK: 'Not allowed by CORS!',
+  INVALID_USER_ID: 'Invalid user id.',
 };
