@@ -13,6 +13,7 @@ Install the dependencies and devDependencies and start the server.
 cd NodeJs-MongoDB-Mongoose-Express-SocketIO-Boilerplate
 nano .env [add required variables -> I have added .env.local for example]
 npm i
+npm test
 npm start
 ```
 
@@ -26,6 +27,10 @@ pm2 save
 pm2 logs [to check all logs]
 pm2 delete all [to delete all processes attached with pm2]
 ```
+
+Example output of test run & coverage report:
+![Test-Report1](/public/test_report1.png?raw=true "Test report 1")
+![Test-Report2](/public/test_report2.png?raw=true "Test report 2")
 
 #
 # Thank you :)

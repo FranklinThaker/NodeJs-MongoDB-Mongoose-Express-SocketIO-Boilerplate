@@ -19,7 +19,7 @@ app.use(express.json({ limit: '50mb' }));
 app.use(logger('common', { skip: () => process.env.NODE_ENV === 'test' }));
 
 app.use('/', express.static('./uploads'));
-app.use('/custom-swagger-ui.css', express.static('custom-swagger-ui.css'));
+app.use('/custom-swagger-ui.css', express.static('./public/custom-swagger-ui.css'));
 const swaggerOptions = {
   customCssUrl: '/custom-swagger-ui.css',
 };
