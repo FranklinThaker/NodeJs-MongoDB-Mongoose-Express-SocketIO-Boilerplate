@@ -1,17 +1,29 @@
+const Bluebird = require('bluebird');
 const jwt = require('jsonwebtoken');
 const SimpleCrypto = require('simple-crypto-js').default;
 const crypto = require('crypto');
 const { envConstants } = require('./constants');
-
 const { errorMessages, successMessages } = require('./messages');
 
-exports.successResponse = (req, res, data, message = successMessages.OPERATION_COMPLETED, code = 200) => {
+exports.successResponse = async (type, res, data, message = successMessages.OPERATION_COMPLETED, code = 200) => {
   res.status(code);
+  const structuredResponse = [];
+  await Bluebird.each(data, (item) => {
+    const { _id, ...attributes } = item;
+    structuredResponse.push({
+      id: _id,
+      type,
+      attributes: {
+        ...attributes,
+      },
+    });
+  });
+
   res.send({
     code,
     success: true,
     message,
-    data,
+    data: structuredResponse,
   });
 };
 
