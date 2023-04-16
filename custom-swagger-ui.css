@@ -1,0 +1,71 @@
+/* Example custom CSS styles */
+.swagger-ui .topbar {
+    background-color: #6591ca;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .swagger-ui .info {
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+  }
+  
+  .swagger-ui .opblock-tag-section {
+    background-color: #f8f8f8;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .swagger-ui .opblock-summary-description {
+    font-size: 14px;
+    color: #666;
+  }
+  
+  .swagger-ui .opblock-summary {
+    background-color: #f8f8f8;
+  }
+  
+  .swagger-ui .opblock-summary:hover {
+    background-color: #c1d3e2;
+  }
+  
+  .swagger-ui .opblock {
+    border: none;
+  }
+  
+  .swagger-ui .opblock-details {
+    border-top: 1px solid #ddd;
+  }
+  
+  .swagger-ui .opblock-details .opblock-description {
+    font-size: 14px;
+    color: #666;
+  }
+  
+  .swagger-ui .parameter__name {
+    font-weight: bold;
+  }
+  
+  .swagger-ui .responses .response-col_description {
+    font-size: 14px;
+    color: #666;
+  }
+  
+  .swagger-ui .responses .response-col_description p {
+    margin-bottom: 5px;
+  }
+  
+  .swagger-ui .responses .response-col_headers {
+    font-size: 44px;
+    color: #666;
+  }
+  
+  .swagger-ui .try-out {
+    background-color: #f8f8f8;
+    border-top: 1px solid #ddd;
+  }
+  
+  .swagger-ui .try-out {
+    background-color: #f8f8f8;
+    border-top: 1px solid #ddd;
+  }
+  
