@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 const {
   beforeEach,
   it,
@@ -11,7 +12,6 @@ const { connect, removeDB } = require('../../connection/db.connect');
 
 beforeEach(() => {
   sinon.restore();
-  // eslint-disable-next-line no-undef
   jest.resetModules(); // Most important - it clears the cache
   delete process.env.NODE_ENV;
   process.env.AUTHENTICATION = 'true';
@@ -26,7 +26,6 @@ it('should test connection', async () => {
 });
 
 it('should throw connection error', async () => {
-  // eslint-disable-next-line no-undef
   process.exit = jest.fn(() => { throw new Error('mockExit'); });
   sinon.stub(mongoose, 'connect').throws(Error('mockExit'));
   try {
@@ -38,7 +37,6 @@ it('should throw connection error', async () => {
 });
 
 it('should test removeDB', async () => {
-  // eslint-disable-next-line no-undef
   sinon.stub(mongoose.connection, 'dropDatabase').callsFake();
   sinon.stub(mongoose.connection, 'close').callsFake();
   await removeDB();
