@@ -2,15 +2,12 @@ const csv = require('csvtojson');
 const jwt = require('jsonwebtoken');
 const path = require('path');
 const { envConstants } = require('../helpers/constants');
-
 const {
   errorResponse,
   decrypt,
 } = require('../helpers/helpers');
-
 const { errorMessages } = require('../helpers/messages');
-
-const UsersModel = require('../models/users');
+const { UsersModel } = require('../models/users');
 
 const authorizationData = [];
 
@@ -34,7 +31,7 @@ exports.authentication = async (req, res, next) => {
     return errorResponse(req, res, error.message, 401);
   }
 
-  const data = await UsersModel.findOne({ _id: decoded._id });
+  const data = await UsersModel.findOne({ _id: decoded._id }).lean();
   if (!data) return errorResponse(req, res, errorMessages.USER_NOT_EXIST, 401);
   if (!data.status) return errorResponse(req, res, errorMessages.USER_ACC_DISABLED, 401);
 
@@ -49,7 +46,12 @@ exports.authentication = async (req, res, next) => {
 
 const validateURL = (req, authorizeURL) => {
   const requestURL = req.originalUrl;
-  const systemURL = req.baseUrl + req.route.path;
+  let systemURL = '';
+  if ((req.route.path).length > 1) {
+    systemURL = req.baseUrl + req.route.path;
+  } else {
+    systemURL = req.baseUrl;
+  }
   const policyURL = authorizeURL;
   if (requestURL === systemURL && systemURL === policyURL) return true;
 
