@@ -7,30 +7,23 @@ const {
   generateJWTtoken,
   comparePassword,
 } = require('../../../helpers/helpers');
-
 const { successMessages, errorMessages } = require('../../../helpers/messages');
-const UsersModel = require('../../../models/users');
+const { UsersModel, ignoredFields } = require('../../../models/users');
 
 exports.register = async (req, res) => {
   try {
     const param = { ...req.body, ...req.params, ...req.query };
 
-    param.password = crypto.createHash('md5').update(param.password).digest('hex');
-
-    const data = await UsersModel.findOneAndUpdate({
+    const hashedPassword = crypto.createHash('md5').update(param.password).digest('hex');
+    const user = await new UsersModel({
+      name: param.name.toLowerCase(),
       email: param.email.toLowerCase(),
-    }, {
-      name: param.name,
-      email: param.email.toLowerCase(),
-      password: param.password,
-      role: param.role || 'user',
-      status: true,
-    }, {
-      new: true,
-      upsert: true,
-    });
+      password: hashedPassword,
+      role: param.role,
+    }).save();
 
-    return successResponse(req, res, data, successMessages.REGISTRATION_DONE);
+    const data = await UsersModel.findOne({ _id: user._id }).lean().select(ignoredFields);
+    return successResponse('users', res, [data], successMessages.REGISTRATION_DONE);
   } catch (error) {
     return errorResponse(req, res, error.message);
   }
@@ -47,33 +40,43 @@ exports.login = async (req, res) => {
     if (!output) return errorResponse(req, res, errorMessages.INVALID_UNAME_PWORD, 401);
 
     const token = encrypt(generateJWTtoken({ _id: user._id, role: user.role }));
-
-    const data = {
-      user,
-      token,
-    };
-
-    return successResponse(req, res, data, successMessages.LOGGED_IN);
+    const userData = await UsersModel.findOne({ _id: user._id }).lean().select(ignoredFields);
+    return successResponse('users', res, [{ ...userData, token }], successMessages.LOGGED_IN);
   } catch (error) {
     return errorResponse(req, res, error.message);
   }
 };
 
-exports.profile = async (req, res) => {
-  const data = await UsersModel.findOne({ _id: req.user._id }).lean();
-  return successResponse(req, res, data, successMessages.DATA_FETCHED);
-};
-
 exports.getAll = async (req, res) => {
-  const data = await UsersModel.find({}).lean();
-  return successResponse(req, res, data, successMessages.DATA_FETCHED);
+  const data = await UsersModel.find().lean().select(ignoredFields);
+  return successResponse('users', res, data, successMessages.DATA_FETCHED);
 };
 
 exports.findById = async (req, res) => {
   try {
     const param = { ...req.body, ...req.params, ...req.query };
-    const data = await UsersModel.findOne({ _id: param.userId }).lean();
-    return successResponse(req, res, data, successMessages.DATA_FETCHED);
+    const data = await UsersModel.findOne({ _id: param.userId }).lean().select(ignoredFields);
+    if (data) {
+      return successResponse('users', res, [data], successMessages.DATA_FETCHED);
+    }
+    return errorResponse(req, res, errorMessages.INVALID_USER_ID, 400);
+  } catch (error) {
+    return errorResponse(req, res, error.message);
+  }
+};
+
+exports.findByIdAndUpdate = async (req, res) => {
+  try {
+    const param = { ...req.body, ...req.params, ...req.query };
+    const data = await UsersModel.findOneAndUpdate({ _id: param.userId }, {
+      name: param.name,
+    }, {
+      new: true,
+    }).lean().select(ignoredFields);
+    if (data) {
+      return successResponse('users', res, [data], successMessages.DATA_FETCHED);
+    }
+    return errorResponse(req, res, errorMessages.INVALID_USER_ID, 400);
   } catch (error) {
     return errorResponse(req, res, error.message);
   }
@@ -82,9 +85,18 @@ exports.findById = async (req, res) => {
 exports.deleteById = async (req, res) => {
   try {
     const param = { ...req.body, ...req.params, ...req.query };
-    const data = await UsersModel.findOneAndDelete({ _id: param.userId });
-    return successResponse(req, res, data, successMessages.DATA_DELETED);
+    const deletedUserDetails = await UsersModel.findOne({ _id: param.userId }).lean().select(ignoredFields);
+    await UsersModel.findByIdAndDelete(param.userId);
+    if (deletedUserDetails) {
+      return successResponse('users', res, [deletedUserDetails], successMessages.DATA_DELETED);
+    }
+    return errorResponse(req, res, errorMessages.INVALID_USER_ID, 400);
   } catch (error) {
     return errorResponse(req, res, error.message);
   }
+};
+
+exports.profile = async (req, res) => {
+  const data = await UsersModel.findOne({ _id: req.user._id }).lean();
+  return successResponse('users', res, [data], successMessages.DATA_FETCHED);
 };

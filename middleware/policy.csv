@@ -1,5 +1,11 @@
 role, url, method
-user, /api/v1/account/profile, GET
-user, /api/v1/account/users, GET
-user, /api/v1/account/users/:userId, GET
-user, /api/v1/account/users/:userId, DELETE
+user, /api/v1/users, GET
+user, /api/v1/users/:userId, GET
+user, /api/v1/users/profile, GET
+user, /api/v1/users/:userId, PUT
+user, /api/v1/users/:userId, DELETE
+
+admin, /api/v1/users, GET
+admin, /api/v1/users/:userId, GET
+admin, /api/v1/users/:userId, PUT
+admin, /api/v1/users/:userId, DELETE

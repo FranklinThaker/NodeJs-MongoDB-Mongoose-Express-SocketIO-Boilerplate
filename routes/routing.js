@@ -4,7 +4,7 @@ const userRoutes = require('../controllers/v1/user/user.routes');
 const { envConstants } = require('../helpers/constants');
 const { errorMessages } = require('../helpers/messages');
 
-const whitelist = [`${envConstants.FRONT_END_URL}`, `${envConstants.APP_HOST}:${envConstants.APP_PORT}`, 'http://localhost'];
+const whitelist = [`${envConstants.FRONT_END_URL}`, `${envConstants.APP_HOST}:${envConstants.APP_PORT}`, 'http://localhost', envConstants.APP_HOST];
 
 const perIpTimeLimit = 15 * 60 * 1000; // 15 minutes
 
@@ -29,7 +29,7 @@ const apiLimiter = rateLimit({
 });
 
 const routes = (app) => {
-  app.use('/api/v1/account', cors(corsOptions), apiLimiter, userRoutes);
+  app.use('/api/v1/users', cors(corsOptions), apiLimiter, userRoutes);
   app.use(errorHandler);
 };
 
